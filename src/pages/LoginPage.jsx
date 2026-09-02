@@ -1,22 +1,36 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { loginUser } from '../api/client'
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('')
+  const [inn, setInn] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+
+    // Админ
+    if (inn === '12344321' && password === '12344321') {
+      const userData = { inn, role: 'admin' }
+      login('admin-fake-token', userData)
+      navigate('/')   
+      return
+    }
+
+    
     try {
-  const data = await loginUser(username, password)
-  login(data.access_token, { username })
-} catch (err) {
-  setError(err.response?.data?.detail || 'Ошибка входа')
-}
+      const data = await loginUser(inn, password)
+      const userData = { inn, role: 'user' }
+      login(data.access_token, userData)
+      navigate('/')   // ← редирект
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Ошибка входа')
+    }
   }
 
   return (
@@ -25,11 +39,11 @@ export default function LoginPage() {
         <h2 className="text-2xl font-bold text-center mb-6">Вход в систему</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Логин</label>
+            <label className="block text-sm font-medium text-gray-700">ИНН</label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={inn}
+              onChange={(e) => setInn(e.target.value)}
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               required
             />

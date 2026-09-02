@@ -34,18 +34,29 @@ api.interceptors.response.use(
 )
 
 
-export async function loginUser(username, password) {
-  const formData = new URLSearchParams()
-  formData.append('username', username)
-  formData.append('password', password)
+// export async function loginUser(username, password) {
+//   const formData = new URLSearchParams()
+//   formData.append('username', username)
+//   formData.append('password', password)
 
-  const response = await api.post('/auth/login', formData, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  })
-  return response.data
+//   const response = await api.post('/auth/login', formData, {
+//     headers: {
+//       'Content-Type': 'application/x-www-form-urlencoded',
+//     },
+//   })
+//   return response.data
+// }
+
+
+export async function loginUser(inn, password) {
+  // const response = await api.post('/auth/login', {
+  //   inn: inn,   
+  //   password: password
+  // })
+  // return response.data
+   return { access_token: 'fake-token-12345' }
 }
+
 
 export async function fetchDocuments() {
   const response = await api.get('/api/documents')

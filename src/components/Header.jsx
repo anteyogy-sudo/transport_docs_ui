@@ -18,6 +18,11 @@ export default function Header() {
           <span className="hidden md:block text-sm font-light text-gray-600">Система электронной подписи документов</span>
         </div>
         <div className="flex items-center gap-4">
+          {user?.role === 'admin' && (
+            <a href="/admin" className="text-sm text-red-600 hover:underline">
+              Админ-Панель
+            </a>
+          )}
           <span className="text-sm text-gray-600">{user?.username || 'Пользователь'}</span>
           <button
             onClick={logout}

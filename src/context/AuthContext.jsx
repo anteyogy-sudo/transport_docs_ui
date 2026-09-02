@@ -33,15 +33,15 @@ export function AuthProvider({ children }) {
     }
 
     
-    if (import.meta.env.DEV) {
-      console.log('Режим разработки: автологин')
-      const devToken = 'dev-fake-jwt-token-12345'
-      const devUser = { username: 'dev_user' }
-      localStorage.setItem('token', devToken)
-      localStorage.setItem('user', JSON.stringify(devUser))
-      setToken(devToken)
-      setUser(devUser)
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log('Режим разработки: автологин')
+    //   const devToken = 'dev-fake-jwt-token-12345'
+    //   const devUser = { username: 'dev_user' }
+    //   localStorage.setItem('token', devToken)
+    //   localStorage.setItem('user', JSON.stringify(devUser))
+    //   setToken(devToken)
+    //   setUser(devUser)
+    // }
     
     setLoading(false)
   }, []) 
