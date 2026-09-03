@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const API_BASE = 'http://localhost:8000'
 
+
 const api = axios.create({
   baseURL: API_BASE,
   timeout: 10000,
@@ -9,6 +10,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
 
 api.interceptors.request.use(
   (config) => {
@@ -20,6 +22,7 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 )
+
 
 api.interceptors.response.use(
   (response) => response,
@@ -34,27 +37,27 @@ api.interceptors.response.use(
 )
 
 
-// export async function loginUser(username, password) {
-//   const formData = new URLSearchParams()
-//   formData.append('username', username)
-//   formData.append('password', password)
+// 2. АДМИН-API (без токенов)
 
-//   const response = await api.post('/auth/login', formData, {
-//     headers: {
-//       'Content-Type': 'application/x-www-form-urlencoded',
-//     },
-//   })
-//   return response.data
-// }
+const adminApi = axios.create({
+  baseURL: API_BASE,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+export async function adminLogin(inn, password) {
+  const response = await adminApi.post('/admin/login', { inn, password })
+  return response.data
+}
+
+
 
 
 export async function loginUser(inn, password) {
-  // const response = await api.post('/auth/login', {
-  //   inn: inn,   
-  //   password: password
-  // })
-  // return response.data
-   return { access_token: 'fake-token-12345' }
+  
+  return { access_token: 'dev-fake-jwt-token-12345' }
 }
 
 
@@ -65,6 +68,17 @@ export async function fetchDocuments() {
 
 export async function signDocument(docId) {
   const response = await api.post(`/api/documents/${docId}/sign`)
+  return response.data
+}
+
+//Админка без токена
+export async function getAdminMessage() {
+  const response = await adminApi.get('/admin/message')
+  return response.data.message
+}
+
+export async function setAdminMessage(message) {
+  const response = await adminApi.post('/admin/message', { message })
   return response.data
 }
 

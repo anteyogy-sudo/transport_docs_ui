@@ -1,25 +1,21 @@
-
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
-import AdminPage from './pages/AdminPage';
-import LoginPage from './pages/LoginPage';
-import DocumentsPage from './pages/DocumentsPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import { Routes, Route, Navigate } from 'react-router-dom'
+import LoginPage from './pages/LoginPage'
+import DocumentsPage from './pages/DocumentsPage'
+import AdminPage from './pages/AdminPage'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
-  const { token } = useAuth();
-
   return (
     <Routes>
-      
       <Route path="/login" element={<LoginPage />} />
-      
-      <Route path="/admin" element={
-       <ProtectedRoute>
-       <AdminPage />
-       </ProtectedRoute>
-       } />
-      
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/"
         element={
@@ -28,12 +24,9 @@ function App() {
           </ProtectedRoute>
         }
       />
-
-      <Route path="*" element={<Navigate to={token ? '/' : '/login'} />} />
-
-      
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
+  )
 }
 
-export default App;
+export default App

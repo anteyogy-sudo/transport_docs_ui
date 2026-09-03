@@ -1,36 +1,41 @@
+
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { loginUser } from '../api/client'
+import { adminLogin } from '../api/client'
 
 export default function LoginPage() {
   const [inn, setInn] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { login } = useAuth()
-  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
-    // Админ
-    if (inn === '12344321' && password === '12344321') {
-      const userData = { inn, role: 'admin' }
-      login('admin-fake-token', userData)
-      navigate('/')   
-      return
-    }
-
-    
     try {
-      const data = await loginUser(inn, password)
-      const userData = { inn, role: 'user' }
-      login(data.access_token, userData)
-      navigate('/')   // ← редирект
+      
+      const response = await adminLogin(inn, password)
+
+      if (response.success) {
+        localStorage.setItem('token', 'admin-fake-token')
+        localStorage.setItem('user', JSON.stringify({ inn, role: 'admin' }))
+        window.location.replace('/')
+        return
+      }
     } catch (err) {
-      setError(err.response?.data?.detail || 'Ошибка входа')
-    }
+  // Если ошибка сети FastAPI недоступен
+  if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+    console.warn('FastAPI недоступен, обычный вход через заглушку')
+    // переходим к обычному входу
+  } else {
+    // ошибка 401 — просто пробуем обычный вход
+    console.log('Не админ, пробуем обычный вход')
+  }
+}
+
+    // Обычный пользователь
+    localStorage.setItem('token', 'fake-token')
+    localStorage.setItem('user', JSON.stringify({ inn, role: 'user' }))
+    window.location.replace('/')
   }
 
   return (

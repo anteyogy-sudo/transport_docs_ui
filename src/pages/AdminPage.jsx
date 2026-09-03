@@ -1,23 +1,40 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
 import Header from '../components/Header'
+import { setAdminMessage } from '../api/client'
+import { getAdminMessage } from '../api/client'
 
 export default function AdminPage() {
-  const { user } = useAuth()
   const [message, setMessage] = useState('')
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+
+
 
   useEffect(() => {
-    const saved = localStorage.getItem('adminMessage')
-    if (saved) setMessage(saved)
+    const loadMessage = async () => {
+      try {
+        const msg = await getAdminMessage()
+        setMessage(msg)
+      } catch (error) {
+        console.error('Ошибка загрузки сообщения:', error)
+        setMessage('') 
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadMessage()
   }, [])
 
-  const handleSave = () => {
-    localStorage.setItem('adminMessage', message)
-    alert('Сообщение сохранено!')
+  const handleSave = async () => {
+    try {
+      await setAdminMessage(message)
+      alert('Сообщение сохранено!')
+    } catch (error) {
+      console.error('Ошибка сохранения:', error)
+      alert('Не удалось сохранить сообщение')
+    }
   }
 
-  // Проверка роли
-  if (user?.role !== 'admin') {
+  if (user.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 shadow-lg rounded-lg">
